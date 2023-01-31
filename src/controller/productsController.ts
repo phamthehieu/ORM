@@ -18,9 +18,9 @@ class ProductsController {
     }
     addProduct = async (req: Request, res: Response) => {
         try {
-            let category = await this.categoryService.findAll()
+
             let product = await this.productService.createProduct(req.body)
-            res.status(200).json(category)
+            res.status(200).json(product)
         } catch (e) {
             res.status(500).json(e.message)
         }
@@ -48,6 +48,14 @@ class ProductsController {
             let id = req.params.id
             let product = await this.productService.findById(id)
             res.status(200).json(product)
+        } catch (e) {
+            res.status(500).json(e.message)
+        }
+    }
+    showCategory = async (req: Request, res: Response) => {
+        try {
+            let category = await this.categoryService.findAll()
+            res.status(200).json(category)
         } catch (e) {
             res.status(500).json(e.message)
         }

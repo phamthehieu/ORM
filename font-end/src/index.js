@@ -43,12 +43,12 @@ function showFormAdd() {
    <div class="form-group">
     <label for="exampleFormControlSelect1">Loại</label>
     <select class="form-control" id="category" name="category">
-        <option value="1">Chó</option>
-        <option value="2">Mèo</option>
+    <option selected></option>
     </select>
    </div>
   <button class="btn btn-primary" onclick="add()">Thêm Moi</button>
 `)
+    showCategory()
 }
 function showHome() {
     $("#body").html(`
@@ -120,15 +120,15 @@ function showFormEdit(id) {
    <div class="form-group">
     <label for="exampleFormControlSelect1">Loại</label>
     <select class="form-control" id="category" name="category">
-        <option >${products[0].nameCategory}</option>
-        <option value="1">Chó</option>
-        <option value="2">Mèo</option>
+        <option selected>${products[0].nameCategory}</option>
+        
     </select>
    </div>
   <button class="btn btn-primary" onclick="edit(${products[0].id})">Chỉnh Sửa</button>
 `)
         }
     })
+    showCategory()
 }
 function edit(id) {
     let name = $("#name").val();
@@ -238,4 +238,20 @@ function editFile(id, e) {
             document.getElementById('imgDiv').innerHTML = `<img src="${downloadURL}" alt="">`
             localStorage.setItem('image', downloadURL);
         });
+}
+function showCategory() {
+    $.ajax({
+        type: 'GET',
+        url: "http://localhost:3000/category",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        success : (category) => {
+            let html = ''
+            category.map(item => {
+                html += `<option value="${item.id}">${item.nameCategory}</option>`
+            })
+            $("#category").html(html)
+        }
+    })
 }
