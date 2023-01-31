@@ -29,6 +29,14 @@ class ProductService {
             let product = await this.productRepository.query(sql);
             return product;
         };
+        this.searchProduct = async (value) => {
+            let sql = `SELECT p.id, p.name, p.price, p.image, c.nameCategory from product p JOIN category c on p.category = c.id where p.name LIKE "%${value}%"`;
+            let products = await this.productRepository.query(sql);
+            if (!products) {
+                return null;
+            }
+            return products;
+        };
         this.productRepository = data_soure_1.AppDataSource.getRepository(product_1.Product);
     }
 }

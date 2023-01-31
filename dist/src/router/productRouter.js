@@ -13,4 +13,5 @@ exports.router.post("/products", productsController_1.default.addProduct);
 exports.router.put("/products/:id", productsController_1.default.editProduct);
 exports.router.delete("/products/:id", productsController_1.default.deleteProduct);
 exports.router.get("/products/:id", productsController_1.default.findById);
+exports.router.get("/find-by-name", productsController_1.default.searchProduct);
 //# sourceMappingURL=productRouter.js.map

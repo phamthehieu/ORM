@@ -64,6 +64,15 @@ class ProductsController {
                 res.status(500).json(e.message);
             }
         };
+        this.searchProduct = async (req, res) => {
+            try {
+                let products = await this.productService.searchProduct(req.query.name);
+                res.status(200).json(products);
+            }
+            catch (e) {
+                res.status(500).json(e.message);
+            }
+        };
         this.productService = productService_1.default;
         this.categoryService = categoryService_1.default;
     }

@@ -15,7 +15,26 @@ function showList() {
                              <td>${item.price}</td>
                              <td><img src="${item.image}" alt="" style="width: 100px; height: 100px"></td>
                              <td>${item.nameCategory}</td>
-                             <td><button onclick="remove('${item.id}')" type="button" class="btn btn-danger">Delete</button></td>
+                             <td>
+                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${item.id}">Delete</button>
+                        <div class="modal fade" id="deleteModal${item.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete ${item.name}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete???
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="remove(${item.id})">Yes</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+</td>
                              <td><button onclick="showFormEdit(${item.id})" type="button" class="btn btn-success">Edit</button></td>                       
                          </tr>`
             })
@@ -46,7 +65,7 @@ function showFormAdd() {
     <option selected></option>
     </select>
    </div>
-  <button class="btn btn-primary" onclick="add()">Thêm Moi</button>
+  <button class="btn btn-primary" onclick="add()">Thêm Mới</button>
 `)
     showCategory()
 }
@@ -80,6 +99,7 @@ function add() {
         price: price,
         category: category
     }
+    console.log(product)
     $.ajax({
         type: 'POST',
         url: "http://localhost:3000/products",
@@ -154,7 +174,6 @@ function edit(id) {
     })
 }
 function remove(id) {
-    if (confirm("Bạn Muốn Xóa Chứ ?")) {
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:3000/products/${id}`,
@@ -165,9 +184,6 @@ function remove(id) {
                 showHome()
             }
         })
-    } else {
-        alert("Không ấn ăn lol ak")
-    }
 }
 
 const firebaseConfig = {
@@ -252,6 +268,67 @@ function showCategory() {
                 html += `<option value="${item.id}">${item.nameCategory}</option>`
             })
             $("#category").html(html)
+        }
+    })
+}
+function searchProduct(value) {
+    let name = value.toLowerCase()
+    $.ajax({
+        type: 'GET',
+        url: `http://localhost:3000/find-by-name?name=${name}`,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(name),
+        success : (products) => {
+            $("#body").html(`
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">name</th>
+      <th scope="col">price</th>
+      <th scope="col">image</th>
+      <th scope="col">Loại</th>
+      <th scope="col" colspan="2" style="text-align: center">Action</th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+  </tbody>
+</table>
+    `)
+            let html = ''
+            products.map(item => {
+                html += `<tr>
+                             <th scope="row">${item.id}</th>                          
+                             <td>${item.name}</td>
+                             <td>${item.price}</td>
+                             <td><img src="${item.image}" alt="" style="width: 100px; height: 100px"></td>
+                             <td>${item.nameCategory}</td>
+                             <td>
+                                 <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${item.id}">Delete</button>
+                        <div class="modal fade" id="deleteModal${item.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete ${item.name}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete???
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="remove(${item.id})">Yes</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                        </td>
+                             <td><button onclick="showFormEdit(${item.id})" type="button" class="btn btn-success">Edit</button></td>                       
+                         </tr>`
+            })
+            $("#tbody").html(html)
         }
     })
 }
